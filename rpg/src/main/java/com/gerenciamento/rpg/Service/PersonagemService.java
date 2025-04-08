@@ -21,7 +21,7 @@ public class PersonagemService {
         return ResponseEntity.status(HttpStatus.CREATED).body(novoPersonagem);
     }
 
-    public ResponseEntity<List<Personagem>> getAllProdutos(){
+    public ResponseEntity<List<Personagem>> getAllPersonagens(){
         List<Personagem> todosPersonagens = personagemRepository.findAll();
         return ResponseEntity.ok(todosPersonagens);
     }
