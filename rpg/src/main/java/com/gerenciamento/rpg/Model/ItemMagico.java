@@ -10,7 +10,6 @@ public class ItemMagico {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String nome;
-    private TipoItem tipoItem;
     private Integer forca;
     private Integer defesa;
 

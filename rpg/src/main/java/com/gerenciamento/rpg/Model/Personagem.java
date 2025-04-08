@@ -11,7 +11,6 @@ public class Personagem {
     private Long id;
     private String nome;
     private String nomeAventureiro;
-    private Classe classe;
     private Integer level;
     private Integer forca;
     private Integer defesa;
