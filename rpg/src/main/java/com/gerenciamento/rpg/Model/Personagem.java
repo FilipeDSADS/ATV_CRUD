@@ -2,6 +2,8 @@ package com.gerenciamento.rpg.Model;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "personagem")
 public class Personagem {
@@ -15,6 +17,9 @@ public class Personagem {
     private Integer level;
     private Integer forca;
     private Integer defesa;
+
+    @OneToMany(mappedBy = "itemMagico", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ItemMagico> itemMagico;
 
     public Personagem(){
     }

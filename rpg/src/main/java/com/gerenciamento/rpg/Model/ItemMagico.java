@@ -14,6 +14,10 @@ public class ItemMagico {
     private Integer forca;
     private Integer defesa;
 
+    @ManyToOne
+    @JoinColumn(name = "personagem_id", nullable = false)
+    private Personagem personagem;
+
     public ItemMagico(){}
 
     public ItemMagico(Long id, String nome, TipoItem tipoItem, Integer forca, Integer defesa) {
