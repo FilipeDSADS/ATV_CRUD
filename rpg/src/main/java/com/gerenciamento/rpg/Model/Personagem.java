@@ -89,4 +89,12 @@ public class Personagem {
     public void setDefesa(Integer defesa) {
         this.defesa = defesa;
     }
+
+    public List<ItemMagico> getItemMagico() {
+        return itemMagico;
+    }
+
+    public void setItemMagico(List<ItemMagico> itemMagico) {
+        this.itemMagico = itemMagico;
+    }
 }

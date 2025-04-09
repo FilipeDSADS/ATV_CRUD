@@ -67,4 +67,12 @@ public class ItemMagico {
     public void setDefesa(Integer defesa) {
         this.defesa = defesa;
     }
+
+    public Personagem getPersonagem() {
+        return personagem;
+    }
+
+    public void setPersonagem(Personagem personagem) {
+        this.personagem = personagem;
+    }
 }
