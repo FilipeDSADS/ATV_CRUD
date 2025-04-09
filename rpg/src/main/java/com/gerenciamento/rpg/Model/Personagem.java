@@ -11,6 +11,7 @@ public class Personagem {
     private Long id;
     private String nome;
     private String nomeAventureiro;
+    private Classe classe;
     private Integer level;
     private Integer forca;
     private Integer defesa;
@@ -18,10 +19,11 @@ public class Personagem {
     public Personagem(){
     }
 
-    public Personagem(Long id, String nome, String nomeAventureiro, Integer level, Integer forca, Integer defesa) {
+    public Personagem(Long id, String nome, String nomeAventureiro, Classe classe, Integer level, Integer forca, Integer defesa) {
         this.id = id;
         this.nome = nome;
         this.nomeAventureiro = nomeAventureiro;
+        this.classe = classe;
         this.level = level;
         this.forca = forca;
         this.defesa = defesa;
@@ -49,6 +51,14 @@ public class Personagem {
 
     public void setNomeAventureiro(String nomeAventureiro) {
         this.nomeAventureiro = nomeAventureiro;
+    }
+
+    public Classe getClasse() {
+        return classe;
+    }
+
+    public void setClasse(Classe classe) {
+        this.classe = classe;
     }
 
     public Integer getLevel() {

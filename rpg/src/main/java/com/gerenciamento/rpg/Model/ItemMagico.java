@@ -10,14 +10,16 @@ public class ItemMagico {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String nome;
+    private TipoItem tipoItem;
     private Integer forca;
     private Integer defesa;
 
     public ItemMagico(){}
 
-    public ItemMagico(Long id, String nome, Integer forca, Integer defesa) {
+    public ItemMagico(Long id, String nome, TipoItem tipoItem, Integer forca, Integer defesa) {
         this.id = id;
         this.nome = nome;
+        this.tipoItem = tipoItem;
         this.forca = forca;
         this.defesa = defesa;
     }
@@ -36,6 +38,14 @@ public class ItemMagico {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public TipoItem getTipoItem() {
+        return tipoItem;
+    }
+
+    public void setTipoItem(TipoItem tipoItem) {
+        this.tipoItem = tipoItem;
     }
 
     public Integer getForca() {

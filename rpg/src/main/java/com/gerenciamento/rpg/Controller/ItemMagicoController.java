@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/ItemMagico")
@@ -26,5 +27,9 @@ public class ItemMagicoController {
         return itemMagicoService.getAllItemMagico();
     }
 
+    @GetMapping("/listar-itemMagico-id/{id}")
+    public ResponseEntity<Optional<ItemMagico>> getItemMagicoById(@PathVariable Long id){
+        return itemMagicoService.getItemMagicoById(id);
+    }
 
 }
