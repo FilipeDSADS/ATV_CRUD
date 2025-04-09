@@ -34,4 +34,21 @@ public class ItemMagicoService {
         return ResponseEntity.ok(getItemMagicoById);
     }
 
+    public ResponseEntity<?> deleteItemMagicoById(@PathVariable Long id){
+        itemMagicoRepository.deleteById(id);
+        return ResponseEntity.ok("Deletado!");
+    }
+
+    public ResponseEntity<ItemMagico> updateItemMagicoById(@RequestBody ItemMagico updateItemMagico, @PathVariable Long id){
+        return itemMagicoRepository.findById(id).map(itemMagico -> {
+            itemMagico.setNome(updateItemMagico.getNome());
+            itemMagico.setTipoItem(updateItemMagico.getTipoItem());
+            itemMagico.setForca(updateItemMagico.getForca());
+            itemMagico.setDefesa((updateItemMagico.getDefesa()));
+
+            ItemMagico updatedItemMagico = itemMagicoRepository.save(itemMagico);
+            return ResponseEntity.ok(updatedItemMagico);
+        }).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
+    }
+
 }

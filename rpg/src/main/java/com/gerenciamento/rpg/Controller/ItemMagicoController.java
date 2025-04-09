@@ -32,4 +32,14 @@ public class ItemMagicoController {
         return itemMagicoService.getItemMagicoById(id);
     }
 
+    @DeleteMapping("/delete-ItemMagico-id/{id}")
+    public ResponseEntity<?> deleteItemMagicoById(@PathVariable Long id){
+        return itemMagicoService.deleteItemMagicoById(id);
+    }
+
+    @PutMapping("/update-itemMagico-id/{id}")
+    public ResponseEntity<ItemMagico> updateItemMagico(@RequestBody ItemMagico itemMagico, @PathVariable Long id){
+        return itemMagicoService.updateItemMagicoById(itemMagico, id);
+    }
+
 }
