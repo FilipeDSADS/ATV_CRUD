@@ -19,6 +19,10 @@ public class PersonagemService {
     private PersonagemRepository personagemRepository;
 
     public ResponseEntity<Personagem> criarPersonagem(@RequestBody Personagem personagem){
+        int totalAtributos = personagem.getForca() + personagem.getDefesa();
+        if (totalAtributos > 10) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
         Personagem novoPersonagem = personagemRepository.save(personagem);
         return ResponseEntity.status(HttpStatus.CREATED).body(novoPersonagem);
     }

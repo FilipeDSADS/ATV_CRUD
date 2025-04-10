@@ -1,7 +1,7 @@
 package com.gerenciamento.rpg.Service;
 
 import com.gerenciamento.rpg.Model.ItemMagico;
-import com.gerenciamento.rpg.Model.Personagem;
+import com.gerenciamento.rpg.Model.TipoItem;
 import com.gerenciamento.rpg.Repository.ItemMagicoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +20,37 @@ public class ItemMagicoService {
     private ItemMagicoRepository itemMagicoRepository;
 
     public ResponseEntity<ItemMagico> criarItemMagico(@RequestBody ItemMagico itemMagico){
+        if (itemMagico.getForca() == 0 && itemMagico.getDefesa() == 0) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+        if (itemMagico.getForca() > 10 || itemMagico.getDefesa() > 10) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+
+        switch (itemMagico.getTipoItem()) {
+            case ARMA:
+                if (itemMagico.getDefesa() != 0) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+                }
+                break;
+            case ARMADURA:
+                if (itemMagico.getForca() != 0) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+                }
+                break;
+            case AMULETO:
+                Long personagemId = itemMagico.getPersonagem().getId();
+                List<ItemMagico> itensDoPersonagem = itemMagicoRepository.findAll();
+                long amuletos = itensDoPersonagem.stream()
+                        .filter(i -> i.getPersonagem().getId().equals(personagemId))
+                        .filter(i -> i.getTipoItem() == TipoItem.AMULETO)
+                        .count();
+                if (amuletos >= 1) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+                }
+                break;
+        }
+
         ItemMagico novoItemMagico = itemMagicoRepository.save(itemMagico);
         return ResponseEntity.status(HttpStatus.CREATED).body(novoItemMagico);
     }

@@ -19,7 +19,7 @@ public class Personagem {
     private Integer defesa;
 
     @OneToMany(mappedBy = "itemMagico", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ItemMagico> itemMagico;
+    private List<ItemMagico> itensMagicos;
 
     public Personagem(){
     }
@@ -91,10 +91,10 @@ public class Personagem {
     }
 
     public List<ItemMagico> getItemMagico() {
-        return itemMagico;
+        return itensMagicos;
     }
 
     public void setItemMagico(List<ItemMagico> itemMagico) {
-        this.itemMagico = itemMagico;
+        this.itensMagicos = itemMagico;
     }
 }
