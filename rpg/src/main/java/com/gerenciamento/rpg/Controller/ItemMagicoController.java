@@ -32,6 +32,11 @@ public class ItemMagicoController {
         return itemMagicoService.getItemMagicoById(id);
     }
 
+    @GetMapping("/personagem-por-item/{itemId}")
+    public ResponseEntity<List<Personagem>> getPersonagemPorItem(@PathVariable Long itemId) {
+        return itemMagicoService.buscarPersonagemPorItemMagico(itemId);
+    }
+
     @DeleteMapping("/delete-ItemMagico-id/{id}")
     public ResponseEntity<?> deleteItemMagicoById(@PathVariable Long id){
         return itemMagicoService.deleteItemMagicoById(id);
@@ -41,5 +46,11 @@ public class ItemMagicoController {
     public ResponseEntity<ItemMagico> updateItemMagico(@RequestBody ItemMagico itemMagico, @PathVariable Long id){
         return itemMagicoService.updateItemMagicoById(itemMagico, id);
     }
+
+    @PutMapping("/remover-item-personagem/{itemId}")
+    public ResponseEntity<String> removerItemDoPersonagem(@PathVariable Long itemId) {
+        return itemMagicoService.removerItemDoPersonagem(itemId);
+    }
+
 
 }

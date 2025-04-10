@@ -93,11 +93,11 @@ public class ItemMagicoService {
 
     public ResponseEntity<ItemMagico> atribuirItemAoPersonagem(Long itemId, Long personagemId) {
         Optional<ItemMagico> itemMag = itemMagicoRepository.findById(itemId);
-        Optional<Personagem> personagemOpt = personagemRepository.findById(personagemId);
+        Optional<Personagem> personagemItem = personagemRepository.findById(personagemId);
 
-        if (itemMag.isPresent() && personagemOpt.isPresent()) {
+        if (itemMag.isPresent() && personagemItem.isPresent()) {
             ItemMagico item = itemMag.get();
-            Personagem personagem = personagemOpt.get();
+            Personagem personagem = personagemItem.get();
 
             if (item.getTipoItem() == TipoItem.AMULETO) {
                 long amuletos = personagem.getItensMagicos().stream().filter(i -> i.getTipoItem() == TipoItem.AMULETO).count();
@@ -117,6 +117,31 @@ public class ItemMagicoService {
         }
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    }
+
+    public ResponseEntity<List<Personagem>> buscarPersonagemPorItemMagico(Long itemId) {
+        List<Personagem> personagemComItem = personagemRepository.findAll().stream()
+                .filter(personagem -> personagem.getItensMagicos() != null)
+                .filter(personagem -> personagem.getItensMagicos().stream()
+                        .anyMatch(item -> item.getId().equals(itemId)))
+                .toList();
+
+        return ResponseEntity.ok(personagemComItem);
+    }
+
+    public ResponseEntity<String> removerItemDoPersonagem(Long itemId) {
+        Optional<ItemMagico> itemPersonagem = itemMagicoRepository.findById(itemId);
+        if (itemPersonagem.isPresent()) {
+            ItemMagico item = itemPersonagem.get();
+            Personagem personagem = item.getPersonagem();
+            if (personagem != null && personagem.getItensMagicos() != null) {
+                personagem.getItensMagicos().removeIf(i -> i.getId().equals(itemId));
+            }
+            item.setPersonagem(null);
+            itemMagicoRepository.save(item);
+            return ResponseEntity.ok("Item removido do personagem com sucesso.");
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Item não encontrado.");
     }
 
 
