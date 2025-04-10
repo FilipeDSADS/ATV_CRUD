@@ -1,6 +1,8 @@
 package com.gerenciamento.rpg.Service;
 
+import com.gerenciamento.rpg.Model.ItemMagico;
 import com.gerenciamento.rpg.Model.Personagem;
+import com.gerenciamento.rpg.Model.TipoItem;
 import com.gerenciamento.rpg.Repository.PersonagemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,13 +20,27 @@ public class PersonagemService {
     @Autowired
     private PersonagemRepository personagemRepository;
 
-    public ResponseEntity<Personagem> criarPersonagem(@RequestBody Personagem personagem){
-        int totalAtributos = personagem.getForca() + personagem.getDefesa();
-        if (totalAtributos > 10) {
+    public ResponseEntity<Personagem> criarPersonagem(@RequestBody Personagem personagem) {
+        if (!pontosDistribuidos(personagem)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
+
+        long quantidadeAmuletos = personagem.getItensMagicos().stream()
+                .filter(item -> item.getTipoItem().equals(TipoItem.AMULETO))
+                .count();
+
+        if (quantidadeAmuletos > 1) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(null);
+        }
+
         Personagem novoPersonagem = personagemRepository.save(personagem);
         return ResponseEntity.status(HttpStatus.CREATED).body(novoPersonagem);
+    }
+
+    private boolean pontosDistribuidos(Personagem personagem) {
+        int totalAtributos = personagem.getForca() + personagem.getDefesa();
+        return totalAtributos <= 10;
     }
 
     public ResponseEntity<List<Personagem>> getAllPersonagens(){
@@ -43,16 +59,36 @@ public class PersonagemService {
     }
 
     public ResponseEntity<Personagem> updatePersonagemById(@RequestBody Personagem updatePersonagem, @PathVariable Long id){
+        if (!pontosDistribuidos(updatePersonagem)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
         return personagemRepository.findById(id).map(personagem -> {
             personagem.setNome(updatePersonagem.getNome());
             personagem.setNomeAventureiro(updatePersonagem.getNomeAventureiro());
             personagem.setLevel(updatePersonagem.getLevel());
             personagem.setForca(updatePersonagem.getForca());
-            personagem.setDefesa((updatePersonagem.getDefesa()));
+            personagem.setDefesa(updatePersonagem.getDefesa());
 
             Personagem updatedPersonagem = personagemRepository.save(personagem);
-            return ResponseEntity.ok(updatePersonagem);
+            return ResponseEntity.ok(updatedPersonagem);
         }).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
     }
+
+    public ResponseEntity<ItemMagico> buscarAmuletoDoPersonagem(Long personagemId) {
+        Optional<Personagem> personagemOpt = personagemRepository.findById(personagemId);
+
+        if (personagemOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        Personagem personagem = personagemOpt.get();
+
+        return personagem.getItensMagicos().stream()
+                .filter(item -> item.getTipoItem().equals(TipoItem.AMULETO))
+                .findFirst()
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
+
 
 }

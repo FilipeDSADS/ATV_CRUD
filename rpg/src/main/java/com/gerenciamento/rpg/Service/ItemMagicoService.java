@@ -20,6 +20,7 @@ public class ItemMagicoService {
 
     @Autowired
     private ItemMagicoRepository itemMagicoRepository;
+    @Autowired
     private PersonagemRepository personagemRepository;
 
     public ResponseEntity<ItemMagico> criarItemMagico(@RequestBody ItemMagico itemMagico){
@@ -42,14 +43,19 @@ public class ItemMagicoService {
                 }
                 break;
             case AMULETO:
-                Long personagemId = itemMagico.getPersonagem().getId();
-                List<ItemMagico> itensDoPersonagem = itemMagicoRepository.findAll();
-                long amuletos = itensDoPersonagem.stream()
-                        .filter(i -> i.getPersonagem().getId().equals(personagemId))
-                        .filter(i -> i.getTipoItem() == TipoItem.AMULETO)
-                        .count();
-                if (amuletos >= 1) {
-                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+                if (itemMagico.getPersonagem() != null) {
+                    Long personagemId = itemMagico.getPersonagem().getId();
+
+                    List<ItemMagico> itensDoPersonagem = itemMagicoRepository.findAll();
+                    long amuletos = itensDoPersonagem.stream()
+                            .filter(i -> i.getPersonagem() != null)
+                            .filter(i -> i.getPersonagem().getId().equals(personagemId))
+                            .filter(i -> i.getTipoItem() == TipoItem.AMULETO)
+                            .count();
+
+                    if (amuletos >= 1) {
+                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+                    }
                 }
                 break;
         }
@@ -86,17 +92,24 @@ public class ItemMagicoService {
     }
 
     public ResponseEntity<ItemMagico> atribuirItemAoPersonagem(Long itemId, Long personagemId) {
-        Optional<ItemMagico> itemOpt = itemMagicoRepository.findById(itemId);
+        Optional<ItemMagico> itemMag = itemMagicoRepository.findById(itemId);
         Optional<Personagem> personagemOpt = personagemRepository.findById(personagemId);
 
-        if (itemOpt.isPresent() && personagemOpt.isPresent()) {
-            ItemMagico item = itemOpt.get();
+        if (itemMag.isPresent() && personagemOpt.isPresent()) {
+            ItemMagico item = itemMag.get();
             Personagem personagem = personagemOpt.get();
+
+            if (item.getTipoItem() == TipoItem.AMULETO) {
+                long amuletos = personagem.getItensMagicos().stream().filter(i -> i.getTipoItem() == TipoItem.AMULETO).count();
+                if (amuletos >= 1) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+                }
+            }
 
             item.setPersonagem(personagem);
 
-            if (!personagem.getItemMagico().contains(item)) {
-                personagem.getItemMagico().add(item);
+            if (!personagem.getItensMagicos().contains(item)) {
+                personagem.getItensMagicos().add(item);
             }
 
             itemMagicoRepository.save(item);

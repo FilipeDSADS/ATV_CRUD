@@ -1,7 +1,10 @@
 package com.gerenciamento.rpg.Model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -19,7 +22,8 @@ public class Personagem {
     private Integer defesa;
 
     @OneToMany(mappedBy = "personagem", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ItemMagico> itensMagicos;
+    @JsonManagedReference
+    private List<ItemMagico> itensMagicos = new ArrayList<>();
 
     public Personagem(){
     }
@@ -90,11 +94,30 @@ public class Personagem {
         this.defesa = defesa;
     }
 
-    public List<ItemMagico> getItemMagico() {
+    public List<ItemMagico> getItensMagicos() {
         return itensMagicos;
     }
 
-    public void setItemMagico(List<ItemMagico> itemMagico) {
+    public void setItensMagicos(List<ItemMagico> itemMagico) {
         this.itensMagicos = itemMagico;
     }
+
+    @JsonProperty("forcaTotal")
+    public int getForcaTotal() {
+        int bonus = 0;
+        if (itensMagicos != null) {
+            bonus = itensMagicos.stream().mapToInt(ItemMagico::getForca).sum();
+        }
+        return this.forca + bonus;
+    }
+
+    @JsonProperty("defesaTotal")
+    public int getDefesaTotal() {
+        int bonus = 0;
+        if (itensMagicos != null) {
+            bonus = itensMagicos.stream().mapToInt(ItemMagico::getDefesa).sum();
+        }
+        return this.defesa + bonus;
+    }
+
 }

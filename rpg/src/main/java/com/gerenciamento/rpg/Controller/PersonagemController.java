@@ -4,6 +4,7 @@ import com.gerenciamento.rpg.Model.ItemMagico;
 import com.gerenciamento.rpg.Model.Personagem;
 import com.gerenciamento.rpg.Service.ItemMagicoService;
 import com.gerenciamento.rpg.Service.PersonagemService;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,7 @@ public class PersonagemController {
 
     @Autowired
     private PersonagemService personagemService;
+    @Autowired
     private ItemMagicoService itemMagicoService;
 
     @PostMapping("/criar-personagem")
@@ -34,6 +36,12 @@ public class PersonagemController {
         return personagemService.getPersonagemById(id);
     }
 
+    @GetMapping("/personagem/{id}/amuleto")
+    public ResponseEntity<ItemMagico> getAmuletoDoPersonagem(@PathVariable Long id) {
+        return personagemService.buscarAmuletoDoPersonagem(id);
+    }
+
+
     @DeleteMapping("/delete-personagem-id/{id}")
     public ResponseEntity<?> deletePersonagemById(@PathVariable Long id){
         return personagemService.deletePersonagemById(id);
@@ -44,9 +52,14 @@ public class PersonagemController {
         return personagemService.updatePersonagemById(personagem, id);
     }
 
-    @PutMapping("/adicionar-item/{itemId}/personagem/{personagemId}")
+    @PostMapping("/adicionar-item/{itemId}/personagem/{personagemId}")
     public ResponseEntity<ItemMagico> atribuirItemAoPersonagem(@PathVariable Long itemId, @PathVariable Long personagemId) {
         return itemMagicoService.atribuirItemAoPersonagem(itemId, personagemId);
+    }
+
+    @PostConstruct
+    public void init() {
+        System.out.println("ItemMagicoService está nulo? " + (itemMagicoService == null));
     }
 
 }
