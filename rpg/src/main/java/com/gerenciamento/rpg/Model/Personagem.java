@@ -18,7 +18,7 @@ public class Personagem {
     private Integer forca;
     private Integer defesa;
 
-    @OneToMany(mappedBy = "itemMagico", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "personagem", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemMagico> itensMagicos;
 
     public Personagem(){

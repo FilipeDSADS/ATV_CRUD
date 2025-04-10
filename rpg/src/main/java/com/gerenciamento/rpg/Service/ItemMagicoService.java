@@ -2,6 +2,8 @@ package com.gerenciamento.rpg.Service;
 
 import com.gerenciamento.rpg.Model.ItemMagico;
 import com.gerenciamento.rpg.Model.TipoItem;
+import com.gerenciamento.rpg.Model.Personagem;
+import com.gerenciamento.rpg.Repository.PersonagemRepository;
 import com.gerenciamento.rpg.Repository.ItemMagicoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,6 +20,7 @@ public class ItemMagicoService {
 
     @Autowired
     private ItemMagicoRepository itemMagicoRepository;
+    private PersonagemRepository personagemRepository;
 
     public ResponseEntity<ItemMagico> criarItemMagico(@RequestBody ItemMagico itemMagico){
         if (itemMagico.getForca() == 0 && itemMagico.getDefesa() == 0) {
@@ -81,5 +84,27 @@ public class ItemMagicoService {
             return ResponseEntity.ok(updatedItemMagico);
         }).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
     }
+
+    public ResponseEntity<ItemMagico> atribuirItemAoPersonagem(Long itemId, Long personagemId) {
+        Optional<ItemMagico> itemOpt = itemMagicoRepository.findById(itemId);
+        Optional<Personagem> personagemOpt = personagemRepository.findById(personagemId);
+
+        if (itemOpt.isPresent() && personagemOpt.isPresent()) {
+            ItemMagico item = itemOpt.get();
+            Personagem personagem = personagemOpt.get();
+
+            item.setPersonagem(personagem);
+
+            if (!personagem.getItemMagico().contains(item)) {
+                personagem.getItemMagico().add(item);
+            }
+
+            itemMagicoRepository.save(item);
+            return ResponseEntity.ok(item);
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    }
+
 
 }

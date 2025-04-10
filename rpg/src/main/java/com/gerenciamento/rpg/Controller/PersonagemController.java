@@ -1,6 +1,8 @@
 package com.gerenciamento.rpg.Controller;
 
+import com.gerenciamento.rpg.Model.ItemMagico;
 import com.gerenciamento.rpg.Model.Personagem;
+import com.gerenciamento.rpg.Service.ItemMagicoService;
 import com.gerenciamento.rpg.Service.PersonagemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,7 @@ public class PersonagemController {
 
     @Autowired
     private PersonagemService personagemService;
+    private ItemMagicoService itemMagicoService;
 
     @PostMapping("/criar-personagem")
     public ResponseEntity<Personagem> criarPersonagem(@RequestBody Personagem personagem){
@@ -39,6 +42,11 @@ public class PersonagemController {
     @PutMapping("/update-personagem-id/{id}")
     public ResponseEntity<Personagem> updatePersonagem(@RequestBody Personagem personagem, @PathVariable Long id){
         return personagemService.updatePersonagemById(personagem, id);
+    }
+
+    @PutMapping("/adicionar-item/{itemId}/personagem/{personagemId}")
+    public ResponseEntity<ItemMagico> atribuirItemAoPersonagem(@PathVariable Long itemId, @PathVariable Long personagemId) {
+        return itemMagicoService.atribuirItemAoPersonagem(itemId, personagemId);
     }
 
 }

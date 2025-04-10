@@ -15,7 +15,7 @@ public class ItemMagico {
     private Integer defesa;
 
     @ManyToOne
-    @JoinColumn(name = "personagem_id", nullable = false)
+    @JoinColumn(name = "personagem_id")
     private Personagem personagem;
 
     public ItemMagico(){}
